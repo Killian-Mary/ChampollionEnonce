@@ -29,8 +29,7 @@ public class Enseignant extends Personne {
     		int heuresTD = this.enseignements.get(i).getVolumeTD();
     		int heuresTP = this.enseignements.get(i).getVolumeTP();
     		int heuresTotalesEquivalentTD = (int) (heuresCM*1.5 + heuresTP*0.75 + heuresTD);
-    		System.out.println("UE - " + this.enseignements.get(i).getUe().getIntitule() + " : " + heuresTotalesEquivalentTD + "h au total" +" [ CM : " + heuresCM + "; TD : " + heuresTD + "; TP : " + heuresTP + "]");
-    		heuresPrevues += heuresTotalesEquivalentTD;
+     		heuresPrevues += heuresTotalesEquivalentTD;
     	}
     	
     	return heuresPrevues;
@@ -55,7 +54,7 @@ public class Enseignant extends Personne {
         		int heuresTD = this.enseignements.get(i).getVolumeTD();
         		int heuresTP = this.enseignements.get(i).getVolumeTP();
         		int heuresTotalesEquivalentTD = (int) (heuresCM*1.5 + heuresTP*0.75 + heuresTD);
-        		heuresPrevuesPourUE = heuresTotalesEquivalentTD;
+        		heuresPrevuesPourUE += heuresTotalesEquivalentTD;
     		}    		
     	}
     	
@@ -67,20 +66,37 @@ public class Enseignant extends Personne {
      * Ajoute un enseignement au service prévu pour cet enseignant
      *
      * @param ue l'UE concernée
-     * @param volumeCM le volume d'heures de cours magitral
+     * @param volumeCM le volume d'heures de cours magistral
      * @param volumeTD le volume d'heures de TD
      * @param volumeTP le volume d'heures de TP
      */
-    public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) {
+    public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) throws IllegalArgumentException{
         
     	// On vérifie que les volumes horaires sont corrects
     	if(volumeCM < 0 || volumeTD < 0 || volumeTP < 0) {
-    		throw new IllegalArgumentException("Un des volumes horaires entrés n'est pas valable (inférireur à 0)");
+    		throw new IllegalArgumentException("Un des volumes horaires entrés n'est pas valable (inférieur à 0)");
     	}
     	
     	ServicePrevu sp = new ServicePrevu(ue, this, volumeCM, volumeTD, volumeTP);
     	this.enseignements.add(sp);
     	ue.getIntervenants().add(sp);
+    }
+    
+    /**
+     * Permet de savoir si un enseignant est en service "normal" ou en sous-service
+     * Sachant qu'un service est "normal" à partir de 192h en équivalent TD
+     * 
+     * @return true si l'enseignant est en sous-service // false s'il est en service "normal"
+     */
+    public boolean enSousService() {
+    	int heuresTotales = this.heuresPrevues();
+    	
+    	if(heuresTotales >= 192) {
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
     }
 
 }

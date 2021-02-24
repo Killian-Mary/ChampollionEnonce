@@ -31,10 +31,34 @@ public class ChampollionJUnitTest {
 
                 // 20h TD pour UML
                 untel.ajouteEnseignement(uml, 0, 20, 0);
+                System.out.println(untel.heuresPrevuesPourUE(uml));
                 
 		assertEquals(10 + 20, untel.heuresPrevuesPourUE(uml),
                          "L'enseignant doit maintenant avoir 30 heures prévues pour l'UE 'uml'");		
 		
+	}
+	
+	@Test
+	public void testAjouteHeureInvalides() throws Exception {
+		// On va ajouter -10heures
+		Exception exception = assertThrows(
+	            IllegalArgumentException.class, 
+	            () -> untel.ajouteEnseignement(uml, -10, 0, 0));
+		
+		assertEquals("Un des volumes horaires entrés n'est pas valable (inférieur à 0)", exception.getMessage());
+
+	}
+	
+	@Test
+	public void testEnSousService() {
+		untel.ajouteEnseignement(java, 50, 50, 50);
+		untel.ajouteEnseignement(uml, 50, 50, 50);
+		
+		Enseignant unAutre = new Enseignant("autre", "autre@gmail.com");
+		unAutre.ajouteEnseignement(java, 20, 10, 10);
+		
+		assertEquals(false,untel.enSousService());
+		assertEquals(true, unAutre.enSousService());
 	}
 	
 }
