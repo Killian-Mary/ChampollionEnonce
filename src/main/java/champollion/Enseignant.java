@@ -46,9 +46,21 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevuesPourUE(UE ue) {
-        // TODO: Implémenter cette méthode
+
+    	int heuresPrevuesPourUE = 0;
     	
-        throw new UnsupportedOperationException("Pas encore implémenté");
+    	for(int i = 0; i < this.enseignements.size(); i++) {
+    		if(this.enseignements.get(i).getUe() == ue) {
+    			int heuresCM = this.enseignements.get(i).getVolumeCM();
+        		int heuresTD = this.enseignements.get(i).getVolumeTD();
+        		int heuresTP = this.enseignements.get(i).getVolumeTP();
+        		int heuresTotalesEquivalentTD = (int) (heuresCM*1.5 + heuresTP*0.75 + heuresTD);
+        		heuresPrevuesPourUE = heuresTotalesEquivalentTD;
+    		}    		
+    	}
+    	
+	return heuresPrevuesPourUE;
+    	
     }
 
     /**
