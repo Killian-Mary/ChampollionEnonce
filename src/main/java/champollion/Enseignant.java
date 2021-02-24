@@ -1,11 +1,16 @@
 package champollion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Enseignant extends Personne {
 
+	private ArrayList<ServicePrevu> enseignements;
     // TODO : rajouter les autres méthodes présentes dans le diagramme UML
 
     public Enseignant(String nom, String email) {
         super(nom, email);
+        this.enseignements = new ArrayList<>();
     }
 
     /**
@@ -17,8 +22,18 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevues() {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        
+    	int heuresPrevues = 0;
+    	for(int i = 0; i < this.enseignements.size(); i++) {
+    		int heuresCM = this.enseignements.get(i).getVolumeCM();
+    		int heuresTD = this.enseignements.get(i).getVolumeTD();
+    		int heuresTP = this.enseignements.get(i).getVolumeTP();
+    		int heuresTotalesEquivalentTD = (int) (heuresCM*1.5 + heuresTP*0.75 + heuresTD);
+    		System.out.println("UE - " + this.enseignements.get(i).getUe().getIntitule() + " : " + heuresTotalesEquivalentTD + "h au total" +" [ CM : " + heuresCM + "; TD : " + heuresTD + "; TP : " + heuresTP + "]");
+    		heuresPrevues += heuresTotalesEquivalentTD;
+    	}
+    	
+    	return heuresPrevues;
     }
 
     /**
@@ -32,6 +47,7 @@ public class Enseignant extends Personne {
      */
     public int heuresPrevuesPourUE(UE ue) {
         // TODO: Implémenter cette méthode
+    	
         throw new UnsupportedOperationException("Pas encore implémenté");
     }
 
@@ -44,8 +60,15 @@ public class Enseignant extends Personne {
      * @param volumeTP le volume d'heures de TP
      */
     public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        
+    	// On vérifie que les volumes horaires sont corrects
+    	if(volumeCM < 0 || volumeTD < 0 || volumeTP < 0) {
+    		throw new IllegalArgumentException("Un des volumes horaires entrés n'est pas valable (inférireur à 0)");
+    	}
+    	
+    	ServicePrevu sp = new ServicePrevu(ue, this, volumeCM, volumeTD, volumeTP);
+    	this.enseignements.add(sp);
+    	ue.getIntervenants().add(sp);
     }
 
 }
